@@ -421,6 +421,191 @@ void size_headers() {
 
 }
 
+void check_sum() {
+
+	printf("CheckSum : ");
+
+	for (int k = 0; k < 4; k++) {
+		printf("%02X ", buffer[i + k]);
+	}
+
+	i += sizeof(unsigned int);
+	printf("\n");
+
+}
+
+void sub_system() {
+
+	printf("Subsystem : ");
+
+	for (int k = 0; k < 2; k++) {
+		printf("%02X ", buffer[i + k]);
+	}
+
+	i += sizeof(unsigned short);
+	printf("\n");
+
+}
+
+void DLL_Charac() {
+
+	printf("DllCharacteristics : ");
+
+	for (int k = 0; k < 2; k++) {
+		printf("%02X ", buffer[i + k]);
+	}
+
+	i += sizeof(unsigned short);
+	printf("\n");
+
+}
+
+void size_stack() {
+
+	if (machine_t == 0x010b) {
+
+		printf("SizeOfStackReverse : ");
+
+		for (int k = 0; k < 4; k++) {
+			printf("%02X ", buffer[i + k]);
+		}
+
+		i += sizeof(unsigned int);
+
+
+	}
+	else if (machine_t == 0x020b) {
+
+		printf("SizeOfStackReverse : ");
+
+		for (int k = 0; k < 8; k++) {
+			printf("%02X ", buffer[i + k]);
+		}
+
+		i += sizeof(unsigned long long);
+
+	}
+
+	printf("\n");
+
+}
+
+
+void stack_commit() {
+
+	if (machine_t == 0x010b) {
+
+		printf("SizeOfStackCommit : ");
+
+		for (int k = 0; k < 4; k++) {
+			printf("%02X ", buffer[i + k]);
+		}
+
+		i += sizeof(unsigned int);
+
+
+	}
+	else if (machine_t == 0x020b) {
+
+		printf("SizeOfStackCommit : ");
+
+		for (int k = 0; k < 8; k++) {
+			printf("%02X ", buffer[i + k]);
+		}
+
+		i += sizeof(unsigned long long);
+
+	}
+
+	printf("\n");
+
+}
+
+void size_heap() {
+
+	if (machine_t == 0x010b) {
+
+		printf("SizeOfHeapReverse : ");
+
+		for (int k = 0; k < 4; k++) {
+			printf("%02X ", buffer[i + k]);
+		}
+
+		i += sizeof(unsigned int);
+
+
+	}
+	else if (machine_t == 0x020b) {
+
+		printf("SizeOfHeapReverse : ");
+
+		for (int k = 0; k < 8; k++) {
+			printf("%02X ", buffer[i + k]);
+		}
+
+		i += sizeof(unsigned long long);
+
+	}
+
+	printf("\n");
+
+}
+
+void heap_commit() {
+
+	if (machine_t == 0x010b) {
+
+		printf("SizeOfHeapCommit : ");
+
+		for (int k = 0; k < 4; k++) {
+			printf("%02X ", buffer[i + k]);
+		}
+
+		i += sizeof(unsigned int);
+
+	}
+	else if (machine_t == 0x020b) {
+
+		printf("SizeOfHeapCommit : ");
+
+		for (int k = 0; k < 8; k++) {
+			printf("%02X ", buffer[i + k]);
+		}
+
+		i += sizeof(unsigned long long);
+
+	}
+
+	printf("\n");
+
+}
+
+void loader() {
+
+	printf("LoaderFlags : ");
+
+	for (int k = 0; k < 4; k++) {
+		printf("%02X ", buffer[i + k]);
+	}
+
+	i += sizeof(unsigned int);
+	printf("\n");
+
+}
+
+void number_rva() {
+
+	printf("#NumberOfRvaAndSizes : ");
+
+	for (int k = 0; k < 4; k++) {
+		printf("%02X ", buffer[i + k]);
+	}
+
+	i += sizeof(unsigned int);
+	printf("\n");
+
+}
+
 int main(int argc, char* argv[]) {
 	
 	FILE *file = fopen(argv[1], "rb");
@@ -459,6 +644,16 @@ int main(int argc, char* argv[]) {
 	win_version();
 	size_image();
 	size_headers();
+	check_sum();
+	sub_system();
+	DLL_Charac();
+	size_stack();
+	stack_commit();
+	size_heap();
+	heap_commit();
+	loader();
+	number_rva();
+
 
 	system("pause");
 
