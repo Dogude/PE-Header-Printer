@@ -3,14 +3,14 @@
 #define SIZE 8192
 
 unsigned char buffer[SIZE];
-int i ;
+int i;
 unsigned short number_of_sections;
 unsigned short machine_t;
 
 void signature() {
-	
+
 	unsigned int pe = *(unsigned int*)&buffer[0x3c];
-	
+
 	i = pe;
 
 	printf("Signature : ");
@@ -19,7 +19,7 @@ void signature() {
 		printf("%02X ", buffer[i + k]);
 	}
 
-	i += sizeof(unsigned int);	
+	i += sizeof(unsigned int);
 	printf("\n");
 
 }
@@ -40,7 +40,7 @@ void machine() {
 void number_sections() {
 
 	unsigned short field = *(unsigned short*)&buffer[i];
-	
+
 	number_of_sections = field;
 
 	printf("#NumberOfSections : ");
@@ -266,8 +266,8 @@ void image_base() {
 		i += sizeof(unsigned int);
 
 	}
-    else if (machine_t == 0x020b) {
-		
+	else if (machine_t == 0x020b) {
+
 		printf("ImageBase(64bit) : ");
 
 		for (int k = 0; k < 8; k++) {
@@ -275,9 +275,9 @@ void image_base() {
 		}
 
 		i += sizeof(unsigned long long);
-		
+
 	}
-	
+
 	printf("\n");
 
 }
@@ -329,7 +329,7 @@ void minor_os() {
 
 	i += sizeof(unsigned short);
 	printf("\n");
-	
+
 }
 
 void major_image() {
@@ -611,7 +611,7 @@ void number_rva() {
 
 
 const char* names[] = {
-		
+
 	"ExportTable",
 	"SizeOfExportTable",
 	"ImportTable",
@@ -654,7 +654,7 @@ void data_directories() {
 
 	for (int j = 0; j < c; j++) {
 
-		printf("%s : ",names[name++]);
+		printf("%s : ", names[name++]);
 
 		for (int k = 0; k < 4; k++) {
 			printf("%02X ", buffer[i + k]);
@@ -688,7 +688,7 @@ const char* sections[] = {
 	"VirtualAdress",
 	"SizeOfRawData",
 	"PointerToRawData",
-	"PointerToRelocaitons",
+	"PointerToRelocations",
 	"PointerToLineNumbers",
 	"NumberOfRelocations",
 	"NumberOfLineNumbers",
@@ -699,9 +699,9 @@ const char* sections[] = {
 void section_table() {
 
 	for (int j = 0; j < number_of_sections; j++) {
-		
+
 		int field = 0;
-		printf("%s",sections[field++]);
+		printf("%s", sections[field++]);
 
 		for (int k = 0; k < 8; k++) {
 
@@ -717,15 +717,15 @@ void section_table() {
 			}
 
 		}
-				
+
 		i += 8;
 		printf("\n");
-		
-				
+
+
 		for (; field < 10; field++) {
-			
+
 			if (field == 7 || field == 8) {
-				
+
 				printf("%s : ", sections[field]);
 
 				for (int k = 0; k < 2; k++) {
@@ -746,10 +746,10 @@ void section_table() {
 
 			i += sizeof(unsigned int);
 			printf("\n");
-			
-			
+
+
 		}
-	
+
 	}
 
 }
@@ -757,14 +757,14 @@ void section_table() {
 
 
 int main(int argc, char* argv[]) {
-	
+
 	if (!argv[1])return 1;
 
-	FILE *file = fopen(argv[1], "rb");
+	FILE* file = fopen(argv[1], "rb");
 
 	if (!file)return 1;
 
-	fread(buffer,1, SIZE,file);
+	fread(buffer, 1, SIZE, file);
 	fclose(file);
 
 	/*coff header*/
@@ -776,7 +776,7 @@ int main(int argc, char* argv[]) {
 	number_of_symbol();
 	size_optional_header();
 	character();
-	
+
 	/*standart coff header*/
 	magic();
 	major_linker();
@@ -813,7 +813,7 @@ int main(int argc, char* argv[]) {
 
 	/* data directories*/
 	data_directories();
-	
+
 	/* section table */
 	section_table();
 
