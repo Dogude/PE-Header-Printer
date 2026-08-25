@@ -1,13 +1,15 @@
 #include <stdio.h>
 
-unsigned char buffer[4096];
+#define SIZE 8192
+
+unsigned char buffer[SIZE];
 int i ;
 unsigned short number_of_sections;
 unsigned short machine_t;
 
 void signature() {
 	
-	unsigned int pe = *(unsigned int*)&buffer[60];
+	unsigned int pe = *(unsigned int*)&buffer[0x3c];
 	
 	i = pe;
 
@@ -603,16 +605,169 @@ void number_rva() {
 
 	i += sizeof(unsigned int);
 	printf("\n");
+	printf("\n");
+	printf("\n");
+}
+
+
+const char* names[] = {
+		
+	"ExportTable",
+	"SizeOfExportTable",
+	"ImportTable",
+	"SizeOfImportTable",
+	"ResourceTable",
+	"SizeOfResourceTable",
+	"ExceptionTable",
+	"SizeOfExceptionTable",
+	"CertificateTable",
+	"SizeOfCertificateTable",
+	"BaseRelocationTable",
+	"SizeOfBaseRelocationTable",
+	"Debug",
+	"SizeOfDebug",
+	"ArchitectureData",
+	"SizeOfArchitectureData",
+	"GlobalPtr",
+	"4 byte zero",
+	"TLSTable",
+	"SizeOfTLSTAble",
+	"LoadConfigTable",
+	"SizeOfLoadConfigTable",
+	"BoundImport",
+	"SizeOfBoundImport",
+	"ImportAddressTable",
+	"SizeOfImportAddressTable",
+	"DelayImportDescriptor",
+	"SizeOfDelayImportDescriptor",
+	"CLRRuntimeHeader",
+	"SizeOfCLRRuntimeHeader",
+	"4 byte zero",
+	"4 byte zero"
+};
+
+
+void data_directories() {
+
+	int c = 16; // 0x10 
+	int name = 0;
+
+	for (int j = 0; j < c; j++) {
+
+		printf("%s : ",names[name++]);
+
+		for (int k = 0; k < 4; k++) {
+			printf("%02X ", buffer[i + k]);
+		}
+
+		i += sizeof(unsigned int);
+		printf("\n");
+
+		printf("%s : ", names[name++]);
+
+		for (int k = 0; k < 4; k++) {
+			printf("%02X ", buffer[i + k]);
+		}
+
+		i += sizeof(unsigned int);
+		printf("\n");
+
+
+	}
+
+
+	printf("\n");
+	printf("\n");
+	printf("\n");
 
 }
 
+const char* sections[] = {
+	"",
+	"VirtualSize",
+	"VirtualAdress",
+	"SizeOfRawData",
+	"PointerToRawData",
+	"PointerToRelocaitons",
+	"PointerToLineNumbers",
+	"NumberOfRelocations",
+	"NumberOfLineNumbers",
+	"Characteristics",
+
+};
+
+void section_table() {
+
+	for (int j = 0; j < number_of_sections; j++) {
+		
+		int field = 0;
+		printf("%s",sections[field++]);
+
+		for (int k = 0; k < 8; k++) {
+
+			int c = buffer[i + k];
+
+			if (c >= 32 && c <= 126) {
+
+				printf("%c", c);
+			}
+			else {
+				printf(".");
+
+			}
+
+		}
+				
+		i += 8;
+		printf("\n");
+		
+				
+		for (; field < 10; field++) {
+			
+			if (field == 7 || field == 8) {
+				
+				printf("%s : ", sections[field]);
+
+				for (int k = 0; k < 2; k++) {
+					printf("%02X ", buffer[i + k]);
+				}
+
+				i += sizeof(unsigned short);
+				printf("\n");
+				continue;
+
+			}
+
+			printf("%s : ", sections[field]);
+
+			for (int k = 0; k < 4; k++) {
+				printf("%02X ", buffer[i + k]);
+			}
+
+			i += sizeof(unsigned int);
+			printf("\n");
+			
+			
+		}
+	
+	}
+
+}
+
+
+
 int main(int argc, char* argv[]) {
 	
+	if (!argv[1])return 1;
+
 	FILE *file = fopen(argv[1], "rb");
 
-	fread(buffer,1,4096,file);
+	if (!file)return 1;
+
+	fread(buffer,1, SIZE,file);
 	fclose(file);
 
+	/*coff header*/
 	signature();
 	machine();
 	number_sections();
@@ -622,6 +777,7 @@ int main(int argc, char* argv[]) {
 	size_optional_header();
 	character();
 	
+	/*standart coff header*/
 	magic();
 	major_linker();
 	minor_linker();
@@ -632,6 +788,7 @@ int main(int argc, char* argv[]) {
 	base_of_code();
 	base_of_data();
 
+	/*windows specific fields*/
 	image_base();
 	section_align();
 	file_align();
@@ -653,6 +810,12 @@ int main(int argc, char* argv[]) {
 	heap_commit();
 	loader();
 	number_rva();
+
+	/* data directories*/
+	data_directories();
+	
+	/* section table */
+	section_table();
 
 
 	system("pause");
