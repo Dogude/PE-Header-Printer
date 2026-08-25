@@ -1,4 +1,6 @@
 # Portable Executable(PE) File Header Fields Printer
+* Requires `MSVC C++ Compiler`  
+* Usage : `test.exe example.exe`
 * In 32 and 64 bit PE files only followings are different
   1. `BaseOfCode` there is no such a field in 64 bit PE file, instead it is in 32 bit PE file.
   2. `ImageBase` This field 8 bytes in 64 bit PE file, 4 byte in 32 bit PE file (right after `BaseOfCode`). 
