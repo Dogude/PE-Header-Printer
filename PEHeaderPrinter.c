@@ -466,7 +466,7 @@ void size_stack() {
 
 	if (machine_t == 0x010b) {
 
-		printf("SizeOfStackReverse : ");
+		printf("SizeOfStackReserve : ");
 
 		for (int k = 0; k < 4; k++) {
 			printf("%02X ", buffer[i + k]);
@@ -478,7 +478,7 @@ void size_stack() {
 	}
 	else if (machine_t == 0x020b) {
 
-		printf("SizeOfStackReverse : ");
+		printf("SizeOfStackReserve : ");
 
 		for (int k = 0; k < 8; k++) {
 			printf("%02X ", buffer[i + k]);
@@ -527,7 +527,7 @@ void size_heap() {
 
 	if (machine_t == 0x010b) {
 
-		printf("SizeOfHeapReverse : ");
+		printf("SizeOfHeapReserve : ");
 
 		for (int k = 0; k < 4; k++) {
 			printf("%02X ", buffer[i + k]);
@@ -539,7 +539,7 @@ void size_heap() {
 	}
 	else if (machine_t == 0x020b) {
 
-		printf("SizeOfHeapReverse : ");
+		printf("SizeOfHeapReserve : ");
 
 		for (int k = 0; k < 8; k++) {
 			printf("%02X ", buffer[i + k]);
