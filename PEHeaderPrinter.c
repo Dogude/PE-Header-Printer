@@ -210,7 +210,7 @@ void size_of_uninit() {
 
 void address_of_entry() {
 
-	printf("AdressOfEntryPoint : ");
+	printf("AddressOfEntryPoint : ");
 
 	for (int k = 0; k < 4; k++) {
 		printf("%02X ", buffer[i + k]);
